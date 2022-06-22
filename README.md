@@ -28,7 +28,7 @@ NextFlow 22.04.4
 - Tool is designed to handle large alignment file and small set of queries. However, if queries are going to be in several thousands and millions then will need to revisit the implementation.
 
 
-## Example
+## Installation
 
 **Clone repo**
 
@@ -38,16 +38,18 @@ NextFlow 22.04.4
 
 
 **Build docker container**
+
 `cd vaex_exercise/module/query`
 
 `docker build -t query .`
 
-**Test Data**
+## Example
+
 Test data is created in `vaex_exercise/data` directory
 
-**To run `query_vaex.py` directly from docker container**
+To run directly from docker image. First go the repo directory `cd vaex_exercise`.
 
-`cd vaex_exercise`
+**To run `query_vaex.py` directly from docker container**
 
 `docker run -it -v $PWD:$PWD -w $PWD --entrypoint /bin/bash --privileged=true query:latest -c 'python3 /scripts/query_vaex.py -a data/small_test/sample_alignment.txt -q data/small_test/sample_query.txt'`
 
@@ -57,15 +59,19 @@ Test data is created in `vaex_exercise/data` directory
 `docker run -it -v $PWD:$PWD -w $PWD --entrypoint /bin/bash --privileged=true query:latest -c 'python3 /scripts/query_pandas.py -a data/small_test/sample_alignment.txt -q data/small_test/sample_query.txt'`
 
 **To run nextflow (only `query_pandas.py` integrated. See Notes below)**
+
 Once nextflow installed, make sure you are using version 22.04.4
+
 `nextflow run main.nf --alignment data/small_test/sample_alignment.txt --query data/small_test/sample_alignment.txt`
 
 ## Output
 
 **query_pandas and query_vaex tool output**
-Output is stored in `query_results/query_pandas_results_<date_timestamp>.txt` and `query_results/query_vaex_results_<date_timestamp>.txt`
+
+Output for both vaex and pandas is stored in `query_results/query_<tool>_results_<date_timestamp>.txt`
 
 **Nextflow output**
+
 Output is stored in `result/query_output_{date_timestamp}/QUERY_PANDAS/<Tool_output>`
 
 ## Unit Testing
@@ -73,6 +79,7 @@ Output is stored in `result/query_output_{date_timestamp}/QUERY_PANDAS/<Tool_out
 `cd vaex_exercise`
 
 **To run unit test for query_pandas.py**
+
 `docker run -it -v $PWD:$PWD -w $PWD --entrypoint /bin/bash query:latest -c 'pytest /scripts/query_pandas.py -vv'`
 
 Expected output
@@ -93,6 +100,7 @@ collected 2 items
 
 
 **To run unit test for query_vaex.py**
+
 `docker run -it -v $PWD:$PWD -w $PWD --entrypoint /bin/bash query:latest -c 'pytest /scripts/query_vaex.py -vv'`
 
 Expected output
