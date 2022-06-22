@@ -2,7 +2,7 @@
 ## Install
 
 Docker 4.8.2
-
+NextFlow 22.04.4
 
 
 ## Assumptions
@@ -11,18 +11,17 @@ Docker 4.8.2
 - Each transcript is unique and do not multimap or have duplicate entries.
 - Each alignment and query files are for a given sample/individual. So these are always in pairs.
 - Number of transcripts index to query will be in hundreds and thousands of rows
-- Number of transcript alignments will be in hundreds of millions
+- Number of transcript alignments will be in hundreds of millions of rows
 
 
 ## Strengths
-- Memory Efficiency - Since the alignment data will be order of hundreds of millions of rows, I used vaex for my implementation. Vaex provides efficient way to load data in memory by first converting the data to hdf5 columnar based storage. This allows one to load hundreds of millions of rows within local computer of 16 gb. and be able to filter on that data. 
+- Memory Efficiency - Since the alignment data will be order of hundreds of millions of rows, I used vaex for my implementation. Vaex provides efficient way to load data in memory by first converting the data to hdf5 which is memory mappable file format. This allows one to load hundreds of millions of rows within local computer with small memory footprint and be able to filter data on that. 
 - CPU Efficiency - I used vaex and multiprocessing tools to improve cpu efficiency. Vaex handles the parallelization by using multiprocessing at its core. I have also used multiprocessing to quickly generate test data.
 - Unit testing of methods
 - Created docker container of tool and used that to run the process in NextFlow.
 - Documentation of methods
 - Using GitFlow paradigm for tool development
-- CI/CD implemented
-- Tested the implementation with simulated data - 30M alignment rows and 10-1000 row queries. All testing was performed on local computer with 8 cpu and 16 gb. memory.
+- Tested the implementation with simulated data - 30M alignment rows and 10-1000 row queries. All testing was performed on local computer with 8 cpu and 16 gb memory.
 
 ## Weakness
 - Haven't tested accuracy with large dataset. Only tested with handfull of small test data
@@ -58,8 +57,8 @@ Test data is created in `vaex_exercise/data` directory
 `docker run -it -v $PWD:$PWD -w $PWD --entrypoint /bin/bash --privileged=true query:latest -c 'python3 /scripts/query_pandas.py -a data/small_test/sample_alignment.txt -q data/small_test/sample_query.txt'`
 
 **To run nextflow (only `query_pandas.py` integrated. See Notes below)**
-
-`nextflow run main.nf --alignment data/test_1/sample_alignment_1.txt --query data/test_1/sample_query_1.txt`
+Once nextflow installed, make sure you are using version 22.04.4
+`nextflow run main.nf --alignment data/small_test/sample_alignment.txt --query data/small_test/sample_alignment.txt`
 
 ## Output
 
@@ -114,17 +113,19 @@ collected 1 item
 
 ## Performance
 
-Testing performed on local computer with 8 CPU and 16GB. Memory
+Testing performed on local computer with 8 CPU and 16GB Memory.
 
-| Dataset | Alignment Rows | Query Rows | Pandas Realtime | Vaex Realtime |
+| Dataset | Alignment Rows | Query Rows | Realtime - Pandas Implementation (csv input) | Realtime - Vaex Implementation (memory mappable input) |
 | --- | --- | --- | --- | --- |
-| Test 1 | 3000 | 10 | < 30s | 5.071s |
-| Test 2 | 300000 | 10 | 1m 32s | 6.129s |
-| Test 3 | 30000000 | 10 | Out of memory | 
-| Test 4 | 30000000 | 100 | Out of memory | 
-| Test 5 | 30000000 | 1000 | Out of memory | > 2h
+| Test 1 | 3000 | 10 | 2.119s | 4.703s |
+| Test 2 | 300000 | 10 | 1m 12.803s | 6.129s |
+| Test 3** | 30000000 | 10 | Out of memory | 36.154s |
+| Test 4** | 30000000 | 100 | Out of memory | 44.091s |
+| Test 5** | 30000000 | 1000 | Out of memory | 7m 38.289s |
+
+** dataset not included in `data` directory. Test data notebook is included (`notebooks/test_data.ipynb`) for one to recreate the test data 
 
 
 ## Note
 
-  I wanted to wrap the tool into nextflow to really monitor resource utilization and compare vaex and pandas implementation. With pandas implementation, I was able to configure successfully. However with vaex implementation, I was not able to successfully configure vaex tool docker in nextflow. Docker daemon seems to not exit properly and will need to look at it further. But thats why you will see nextflow code around.
+  I wanted to wrap the tool into NextFlow to really monitor resource utilization and compare vaex and pandas implementation. With pandas implementation, I was able to configure successfully. However with vaex implementation, I was not able to successfully configure vaex tool docker in NextFlow. Docker daemon seems to not exit properly and will need to look at it further. But thats why you will see NextFlow code around.
