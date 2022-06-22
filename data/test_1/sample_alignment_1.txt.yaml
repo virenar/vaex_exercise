@@ -1,3 +1,0 @@
-# this file exists so that we know when not to do the
-# ../data/test_1/sample_alignment_1.txt → ../data/test_1/sample_alignment_1.txt.hdf5 conversion
-fingerprint: 3e68e93929e824609fca12cd2158f368

@@ -1,3 +1,0 @@
-# this file exists so that we know when not to do the
-# ../data/test_1/sample_query_1.txt → ../data/test_1/sample_query_1.txt.hdf5 conversion
-fingerprint: e4eb916303befd4434b66236729a73c3
