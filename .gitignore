@@ -15,5 +15,5 @@ test_6
 docs
 .ipynb*
 *txt.hdf5
-*txts.yaml
+*txt.yaml
 query_results
