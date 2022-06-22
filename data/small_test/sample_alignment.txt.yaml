@@ -1,0 +1,3 @@
+# this file exists so that we know when not to do the
+# ../data/small_test/sample_alignment.txt → ../data/small_test/sample_alignment.txt.hdf5 conversion
+fingerprint: 2b32cf9e9552fd559674cc7ab12df4d7
