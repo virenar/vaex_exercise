@@ -1,0 +1,4 @@
+0	TR1	4	CHR1	                  7
+1	TR2	0	CHR2	                  10
+3	TR2	10	CHR2	                  20
+2	TR1	13	CHR1	                  23
